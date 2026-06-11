@@ -1,0 +1,125 @@
+---
+const PUBLIC_TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+---
+
+<form
+  id="contact-form"
+  method="POST"
+  action="/api/contact"
+  class="space-y-6 font-body"
+  novalidate
+>
+  <!-- honeypot -->
+  <div style="position:absolute;left:-9999px;opacity:0;pointer-events:none" aria-hidden="true">
+    <label for="website">Leave blank</label>
+    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="grid sm:grid-cols-2 gap-6">
+    <div>
+      <label for="name" class="block text-xs uppercase tracking-widest text-muted mb-2">Full name *</label>
+      <input
+        type="text" id="name" name="name" required autocomplete="name"
+        class="w-full border border-rule bg-transparent px-4 py-3 text-sm text-ink placeholder:text-muted/50 focus:outline-none focus:border-ink transition-colors"
+        placeholder="Jane Smith"
+      />
+    </div>
+    <div>
+      <label for="business" class="block text-xs uppercase tracking-widest text-muted mb-2">Business name</label>
+      <input
+        type="text" id="business" name="business" autocomplete="organization"
+        class="w-full border border-rule bg-transparent px-4 py-3 text-sm text-ink placeholder:text-muted/50 focus:outline-none focus:border-ink transition-colors"
+        placeholder="Acme Ltd"
+      />
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-2 gap-6">
+    <div>
+      <label for="email" class="block text-xs uppercase tracking-widest text-muted mb-2">Email address *</label>
+      <input
+        type="email" id="email" name="email" required autocomplete="email"
+        class="w-full border border-rule bg-transparent px-4 py-3 text-sm text-ink placeholder:text-muted/50 focus:outline-none focus:border-ink transition-colors"
+        placeholder="jane@acme.co.uk"
+      />
+    </div>
+    <div>
+      <label for="phone" class="block text-xs uppercase tracking-widest text-muted mb-2">Phone (optional)</label>
+      <input
+        type="tel" id="phone" name="phone" autocomplete="tel"
+        class="w-full border border-rule bg-transparent px-4 py-3 text-sm text-ink placeholder:text-muted/50 focus:outline-none focus:border-ink transition-colors"
+        placeholder="+44 7700 900000"
+      />
+    </div>
+  </div>
+
+  <div>
+    <label for="projectType" class="block text-xs uppercase tracking-widest text-muted mb-2">Project type *</label>
+    <select
+      id="projectType" name="projectType" required
+      class="w-full border border-rule bg-cream px-4 py-3 text-sm text-ink focus:outline-none focus:border-ink transition-colors appearance-none"
+    >
+      <option value="" disabled selected>Select…</option>
+      <option>New website</option>
+      <option>Redesign</option>
+      <option>E-commerce</option>
+      <option>SEO / blog</option>
+      <option>Maintenance</option>
+      <option>Other</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="message" class="block text-xs uppercase tracking-widest text-muted mb-2">Tell us about your project *</label>
+    <textarea
+      id="message" name="message" required rows="5"
+      class="w-full border border-rule bg-transparent px-4 py-3 text-sm text-ink placeholder:text-muted/50 focus:outline-none focus:border-ink transition-colors resize-none"
+      placeholder="What do you need? Rough budget? Timeline?"
+    ></textarea>
+  </div>
+
+  {PUBLIC_TURNSTILE_SITE_KEY && (
+    <div
+      class="cf-turnstile"
+      data-sitekey={PUBLIC_TURNSTILE_SITE_KEY}
+      data-theme="light"
+    ></div>
+  )}
+
+  <div class="flex items-start gap-3">
+    <input
+      type="checkbox" id="gdpr" name="gdpr" required
+      class="mt-0.5 w-4 h-4 border-rule accent-terracotta shrink-0"
+    />
+    <label for="gdpr" class="text-xs text-muted leading-relaxed">
+      I agree to Getwebify processing my data to respond to this enquiry, in line with the
+      <a href="/privacy" class="underline hover:text-ink">Privacy Policy</a>. *
+    </label>
+  </div>
+
+  <button
+    type="submit"
+    id="submit-btn"
+    class="bg-terracotta text-cream font-medium px-8 py-3.5 rounded-full hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    Send enquiry
+  </button>
+
+  <p id="form-error" class="hidden text-sm text-red-600"></p>
+</form>
+
+{PUBLIC_TURNSTILE_SITE_KEY && (
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+)}
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const err = document.getElementById('form-error') as HTMLParagraphElement;
+
+  form?.addEventListener('submit', () => {
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    err.classList.add('hidden');
+  });
+</script>

@@ -1,0 +1,42 @@
+---
+interface Props {
+  clientName: string;
+  rating: number;
+  quote: string;
+  projectType?: string;
+  date?: string;
+  featured?: boolean;
+}
+const { clientName, rating, quote, projectType, date, featured } = Astro.props;
+const stars = Math.min(5, Math.max(1, rating));
+---
+
+<div class:list={['reveal border border-rule p-6 break-inside-avoid', featured && 'bg-ink text-cream']}>
+  <div class="flex gap-0.5 mb-4">
+    {Array.from({ length: 5 }).map((_, i) => (
+      <svg
+        width="16" height="16" viewBox="0 0 24 24"
+        fill={i < stars ? 'currentColor' : 'none'}
+        stroke="currentColor" stroke-width="1.5"
+        class:list={[i < stars ? 'text-terracotta' : (featured ? 'text-cream/30' : 'text-rule')]}
+      >
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+    ))}
+  </div>
+
+  <blockquote class:list={['font-body text-sm leading-relaxed mb-4', featured ? 'text-cream/80' : 'text-ink/80']}>
+    &ldquo;{quote}&rdquo;
+  </blockquote>
+
+  <div class="flex items-center justify-between gap-2">
+    <p class:list={['font-display text-sm font-semibold', featured ? 'text-cream' : 'text-ink']} style="font-variation-settings: 'opsz' 72">
+      {clientName}
+    </p>
+    {projectType && (
+      <span class:list={['font-body text-xs uppercase tracking-widest', featured ? 'text-cream/50' : 'text-muted']}>
+        {projectType}
+      </span>
+    )}
+  </div>
+</div>

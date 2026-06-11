@@ -1,0 +1,38 @@
+---
+interface Service {
+  title: string;
+  description?: string;
+  icon?: string;
+  cta?: string;
+  order?: number;
+}
+interface Props {
+  services: Service[];
+}
+const { services } = Astro.props;
+const sorted = [...services].sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+---
+
+<div class="divide-y divide-rule">
+  {sorted.map((service, i) => (
+    <div class="reveal grid md:grid-cols-[80px_1fr_auto] gap-4 md:gap-8 items-start py-8 group">
+      <span class="font-display text-4xl text-muted/40 select-none" style="font-variation-settings: 'opsz' 144">
+        {String(i + 1).padStart(2, '0')}
+      </span>
+      <div>
+        <h3 class="font-display text-2xl md:text-3xl text-ink mb-2 leading-tight" style="font-variation-settings: 'opsz' 72">
+          {service.title}
+        </h3>
+        {service.description && (
+          <p class="font-body text-muted text-sm leading-relaxed max-w-lg">{service.description}</p>
+        )}
+      </div>
+      <a
+        href="/contact"
+        class="font-body text-sm font-medium text-terracotta opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap self-center"
+      >
+        {service.cta ?? 'Get a quote'} →
+      </a>
+    </div>
+  ))}
+</div>

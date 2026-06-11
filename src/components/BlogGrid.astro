@@ -1,0 +1,61 @@
+---
+interface Post {
+  title: string;
+  slug: { current: string };
+  excerpt?: string;
+  publishedAt?: string;
+  coverImage?: any;
+}
+interface Props {
+  posts: Post[];
+  featured?: boolean;
+}
+const { posts, featured = false } = Astro.props;
+
+function fmtDate(iso?: string) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+---
+
+<div class:list={[
+  'grid gap-8',
+  featured ? 'md:grid-cols-3' : 'md:grid-cols-2 lg:grid-cols-3'
+]}>
+  {posts.map((post, i) => (
+    <article class:list={['reveal group', featured && i === 0 && 'md:col-span-3']}>
+      <a href={`/blog/${post.slug.current}`} class="block">
+        <div class:list={[
+          'border border-rule overflow-hidden mb-4 bg-rule/30',
+          featured && i === 0 ? 'aspect-[16/7]' : 'aspect-[16/9]'
+        ]}>
+          {post.coverImage ? (
+            <img
+              src={`https://cdn.sanity.io/images/sbz22i1p/production/${post.coverImage.asset._ref.replace('image-', '').replace('-jpg', '.jpg').replace('-png', '.png').replace('-webp', '.webp')}`}
+              alt={post.title}
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              loading="lazy"
+            />
+          ) : (
+            <div class="w-full h-full bg-rule/50 flex items-center justify-center">
+              <span class="font-display text-muted text-xs" style="font-variation-settings: 'opsz' 72">Getwebify</span>
+            </div>
+          )}
+        </div>
+
+        {post.publishedAt && (
+          <p class="font-body text-xs uppercase tracking-widest text-muted mb-2">{fmtDate(post.publishedAt)}</p>
+        )}
+        <h2 class:list={[
+          'font-display text-ink group-hover:text-terracotta transition-colors mb-2 leading-snug',
+          featured && i === 0 ? 'text-2xl md:text-3xl' : 'text-xl'
+        ]} style="font-variation-settings: 'opsz' 72">
+          {post.title}
+        </h2>
+        {post.excerpt && (
+          <p class="font-body text-muted text-sm leading-relaxed line-clamp-3">{post.excerpt}</p>
+        )}
+      </a>
+    </article>
+  ))}
+</div>

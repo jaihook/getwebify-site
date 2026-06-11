@@ -1,0 +1,27 @@
+---
+interface Props {
+  name: string;
+  description?: string;
+  affiliateUrl: string;
+  category?: string;
+}
+const { name, description, affiliateUrl, category } = Astro.props;
+---
+
+<div class="reveal border border-rule p-6 flex flex-col gap-4 bg-cream">
+  {category && (
+    <p class="font-body text-xs uppercase tracking-widest text-muted">{category}</p>
+  )}
+  <div class="flex-1">
+    <h3 class="font-display text-lg mb-2" style="font-variation-settings: 'opsz' 72">{name}</h3>
+    {description && <p class="font-body text-muted text-sm leading-relaxed">{description}</p>}
+  </div>
+  <a
+    href={affiliateUrl}
+    target="_blank"
+    rel="noopener noreferrer sponsored"
+    class="bg-terracotta text-cream font-body text-sm font-medium px-4 py-2.5 rounded-full text-center hover:-translate-y-0.5 transition-all"
+  >
+    Visit {name} →
+  </a>
+</div>

@@ -1,0 +1,88 @@
+---
+const navLinks = [
+  { href: '/work', label: 'Work' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/reviews', label: 'Reviews' },
+  { href: '/tools', label: 'Tools' },
+  { href: '/about', label: 'About' },
+];
+const currentPath = Astro.url.pathname;
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-cream/90 backdrop-blur-sm border-b border-rule">
+  <nav class="max-w-[1200px] mx-auto px-6 md:px-10 h-16 flex items-center justify-between" aria-label="Main navigation">
+    <a href="/" class="font-display text-xl font-semibold text-ink hover:text-terracotta transition-colors" style="font-variation-settings: 'opsz' 72">
+      Getwebify
+    </a>
+
+    <ul class="hidden md:flex items-center gap-8 font-body text-sm font-medium">
+      {navLinks.map(({ href, label }) => (
+        <li>
+          <a
+            href={href}
+            class:list={[
+              'nav-link relative text-ink/70 hover:text-ink transition-colors',
+              currentPath.startsWith(href) && 'text-ink'
+            ]}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <a
+      href="/contact"
+      class="hidden md:inline-flex items-center gap-2 bg-terracotta text-cream font-body text-sm font-medium px-5 py-2.5 rounded-full hover:-translate-y-0.5 transition-all"
+    >
+      Start a project
+    </a>
+
+    <button
+      id="nav-toggle"
+      class="md:hidden text-ink p-2"
+      aria-label="Toggle menu"
+      aria-expanded="false"
+    >
+      <svg id="icon-open" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8">
+        <line x1="3" y1="6" x2="19" y2="6"/>
+        <line x1="3" y1="11" x2="19" y2="11"/>
+        <line x1="3" y1="16" x2="19" y2="16"/>
+      </svg>
+      <svg id="icon-close" class="hidden" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8">
+        <line x1="4" y1="4" x2="18" y2="18"/>
+        <line x1="18" y1="4" x2="4" y2="18"/>
+      </svg>
+    </button>
+  </nav>
+
+  <div id="mobile-menu" class="hidden md:hidden border-t border-rule bg-cream">
+    <ul class="px-6 py-4 flex flex-col gap-4 font-body text-sm font-medium">
+      {navLinks.map(({ href, label }) => (
+        <li>
+          <a href={href} class="text-ink/70 hover:text-ink transition-colors block py-1">{label}</a>
+        </li>
+      ))}
+      <li class="pt-2 border-t border-rule">
+        <a href="/contact" class="bg-terracotta text-cream px-5 py-2.5 rounded-full inline-block hover:-translate-y-0.5 transition-all">
+          Start a project
+        </a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const iconOpen = document.getElementById('icon-open');
+  const iconClose = document.getElementById('icon-close');
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = !menu?.classList.contains('hidden');
+    menu?.classList.toggle('hidden');
+    iconOpen?.classList.toggle('hidden', !isOpen);
+    iconClose?.classList.toggle('hidden', isOpen);
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+  });
+</script>
