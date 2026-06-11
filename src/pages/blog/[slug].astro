@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import AffiliateDisclosure from '../../components/AffiliateDisclosure.astro';
+import AffiliateCard from '../../components/AffiliateCard.astro';
+import { PortableText } from 'astro-portabletext';
 import { getPosts, getPost } from '../../lib/sanity';
 
 export async function getStaticPaths() {
@@ -19,10 +22,28 @@ if (!post) return Astro.redirect('/blog');
   title={post.seoMeta?.metaTitle ?? `${post.title} — Getwebify Blog`}
   description={post.seoMeta?.metaDescription ?? post.excerpt}
 >
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.excerpt ?? '',
+    "datePublished": post.publishedAt ?? '',
+    "dateModified": post.publishedAt ?? '',
+    "author": {
+      "@type": "Person",
+      "name": post.author?.name ?? 'Getwebify'
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Getwebify",
+      "url": "https://www.getwebify.uk"
+    },
+    "url": `https://www.getwebify.uk/blog/${slug}`
+  })} />
   <article class="py-20 md:py-32 px-6 md:px-10 max-w-[800px] mx-auto">
     {post.hasAffiliates && (
-      <div class="bg-forest/10 border border-forest/20 text-forest text-sm px-4 py-3 rounded mb-8 font-body">
-        This post contains affiliate links. We only recommend tools we use or have thoroughly tested. If you sign up via our link, we may earn a commission at no extra cost to you.
+      <div class="mb-8">
+        <AffiliateDisclosure />
       </div>
     )}
 
@@ -41,26 +62,24 @@ if (!post) return Astro.redirect('/blog');
       </div>
     </header>
 
-    <!-- Portable Text body rendered here in Phase 4 -->
-    <div class="font-body leading-relaxed space-y-4 text-ink">
-      {!post.body && <p class="text-muted">[Post body will render here]</p>}
+    <div class="font-body leading-relaxed prose prose-neutral max-w-none">
+      {post.body
+        ? <PortableText value={post.body} />
+        : <p class="text-muted">[Post body coming soon.]</p>
+      }
     </div>
 
     {post.affiliateProducts?.length > 0 && (
       <aside class="mt-16 border-t border-rule pt-12">
         <h2 class="font-display text-2xl mb-6" style="font-variation-settings: 'opsz' 72">Tools mentioned in this post</h2>
-        <div class="space-y-4">
+        <div class="grid sm:grid-cols-2 gap-6">
           {post.affiliateProducts.map((p: any) => (
-            <div class="flex items-start justify-between gap-4 border border-rule p-4 rounded">
-              <div>
-                <h3 class="font-display text-lg">{p.name}</h3>
-                <p class="font-body text-muted text-sm">{p.description}</p>
-              </div>
-              <a href={p.affiliateUrl} target="_blank" rel="noopener noreferrer sponsored"
-                class="bg-terracotta text-cream font-body text-sm font-medium px-4 py-2 rounded-full flex-shrink-0 hover:-translate-y-0.5 transition-all">
-                Visit →
-              </a>
-            </div>
+            <AffiliateCard
+              name={p.name}
+              description={p.description}
+              affiliateUrl={p.affiliateUrl}
+              category={p.category}
+            />
           ))}
         </div>
       </aside>
