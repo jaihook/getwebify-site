@@ -187,16 +187,36 @@ Every blog post ends with CTA: "Need help with X? Let's talk →"
 `/reviews` — star-rated client reviews (JSON-LD for Google rich snippets)
 `/tools` — curated affiliate recommendations by category
 
-## Build Phases (status: NOT STARTED)
+## Build Phases
 
-1. GitHub repo + Astro scaffold + Tailwind + `@sanity/astro`
-2. Sanity project init + schemas + Studio embed + CORS config — includes `Review`, `CaseStudy`, `AffiliateProduct`
-3. Page architecture (Home, Blog, About, Contact, Studio, `/reviews`, `/tools`, `/work/[slug]`)
-4. Component build (Header, Footer, Hero, ServiceCards, BlogGrid, WhatsAppButton, ContactForm, ReviewCard, AffiliateCard, AffiliateDisclosure)
-5. Sales funnel wiring (CTAs, floating WhatsApp button, affiliate cards in blog posts)
-6. SEO (sitemaps, robots.txt, OG images, LocalBusiness JSON-LD, Review schema for `/reviews`)
-7. Vercel deployment + custom domain + env vars + Sanity webhook → redeploy
-8. Contact form: fields (Name, Business, Email, Phone, ProjectType, Message, GDPR checkbox, honeypot) + Turnstile + Sheets logging + Resend alert + auto-reply + `/thank-you` + SPF/DKIM
+1. ✅ GitHub repo + Astro scaffold + Tailwind + `@sanity/astro`
+2. ✅ Sanity project init + schemas + Studio embed + CORS config — includes `Review`, `CaseStudy`, `AffiliateProduct`
+3. ✅ Page architecture (Home, Blog, About, Contact, Studio, `/reviews`, `/tools`, `/work/[slug]`)
+4. ✅ Component build — all 10 in `src/components/`, wired into `BaseLayout.astro` (Header, Footer, WhatsAppButton auto-included on every page)
+5. 🔄 Sales funnel wiring — `index.astro` done (Hero, ServiceCards, BlogGrid, ReviewCard, LocalBusiness JSON-LD); remaining 4 pages below
+6. ⏳ SEO — `@astrojs/sitemap` installed; needs: site URL in astro.config.mjs, robots.txt content, Article JSON-LD on blog/[slug].astro
+7. ⏳ Vercel deployment + custom domain `www.getwebify.uk` + env vars + Sanity webhook
+8. ⏳ Contact form API (`src/pages/api/contact.ts`) — requires `output: 'hybrid'` in astro.config.mjs
+
+### Phase 5 remaining (start here next session)
+
+- `src/pages/blog/index.astro` — replace inline markup with `<BlogGrid posts={posts} featured />`
+- `src/pages/blog/[slug].astro` — add `<AffiliateDisclosure />` (when `hasAffiliates`), `<AffiliateCard>` per product, wire Portable Text body via `astro-portabletext` + `@sanity/image-url`
+- `src/pages/contact.astro` — replace inline form with `<ContactForm />`
+- `src/pages/reviews.astro` — replace inline blockquotes with `<ReviewCard>` per review
+
+### Phase 6 tasks
+
+- `astro.config.mjs` — add `site: 'https://www.getwebify.uk'` + `sitemap()` integration
+- `public/robots.txt` — allow all, `Sitemap: https://www.getwebify.uk/sitemap-index.xml`
+- `src/pages/blog/[slug].astro` — Article JSON-LD (`BlogPosting`, `headline`, `datePublished`, `author`)
+
+### Phase 8 files to create
+
+- `src/pages/api/contact.ts` — Astro API endpoint
+- `src/lib/sheets.ts` — Google Sheets API v4 service account append
+- `src/lib/turnstile.ts` — Cloudflare Turnstile server-side verify
+- `astro.config.mjs` — change `output: 'static'` → `output: 'hybrid'` so `/api/contact` is server-side
 
 ## Dependencies
 
