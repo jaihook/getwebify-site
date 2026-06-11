@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPosts } from '../../lib/sanity';
+
+const posts = await getPosts();
+---
+
+<BaseLayout
+  title="Blog — Getwebify"
+  description="Web design tips, SEO guides, and tool reviews for UK small businesses."
+>
+  <section class="py-20 md:py-32 px-6 md:px-10 max-w-[1200px] mx-auto">
+    <h1 class="font-display text-4xl md:text-6xl mb-2" style="font-size: clamp(2rem, 6vw, 4rem); font-variation-settings: 'opsz' 144">
+      The Blog
+    </h1>
+    <hr class="border-rule mb-12" />
+
+    {posts.length === 0 && <p class="font-body text-muted">Posts coming soon.</p>}
+
+    {posts.length > 0 && (
+      <>
+        <article class="mb-16">
+          <a href={`/blog/${posts[0].slug.current}`} class="group block md:grid md:grid-cols-2 gap-12 items-start">
+            <div class="aspect-video bg-rule rounded mb-6 md:mb-0 overflow-hidden"></div>
+            <div>
+              {posts[0].hasAffiliates && (
+                <span class="inline-block bg-forest text-cream text-xs px-2 py-0.5 rounded mb-3 font-body">Contains affiliate links</span>
+              )}
+              <h2 class="font-display text-2xl md:text-3xl group-hover:text-terracotta transition-colors mb-3" style="font-variation-settings: 'opsz' 72">
+                {posts[0].title}
+              </h2>
+              <p class="font-body text-muted mb-4">{posts[0].excerpt}</p>
+              <span class="font-body text-sm text-terracotta nav-link">Read post →</span>
+            </div>
+          </a>
+        </article>
+
+        {posts.length > 1 && (
+          <div class="grid md:grid-cols-3 gap-8">
+            {posts.slice(1).map((post: any) => (
+              <article class="reveal">
+                <a href={`/blog/${post.slug.current}`} class="group block">
+                  <div class="aspect-video bg-rule rounded mb-4 overflow-hidden"></div>
+                  {post.hasAffiliates && (
+                    <span class="inline-block bg-forest text-cream text-xs px-2 py-0.5 rounded mb-2 font-body">Contains affiliate links</span>
+                  )}
+                  <h2 class="font-display text-lg group-hover:text-terracotta transition-colors mb-1">{post.title}</h2>
+                  <p class="font-body text-muted text-sm">{post.excerpt}</p>
+                </a>
+              </article>
+            ))}
+          </div>
+        )}
+      </>
+    )}
+  </section>
+</BaseLayout>

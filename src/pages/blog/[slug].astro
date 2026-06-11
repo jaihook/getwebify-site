@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPosts, getPost } from '../../lib/sanity';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post: any) => ({
+    params: { slug: post.slug.current },
+  }));
+}
+
+const { slug } = Astro.params;
+const post = await getPost(slug!);
+
+if (!post) return Astro.redirect('/blog');
+---
+
+<BaseLayout
+  title={post.seoMeta?.metaTitle ?? `${post.title} — Getwebify Blog`}
+  description={post.seoMeta?.metaDescription ?? post.excerpt}
+>
+  <article class="py-20 md:py-32 px-6 md:px-10 max-w-[800px] mx-auto">
+    {post.hasAffiliates && (
+      <div class="bg-forest/10 border border-forest/20 text-forest text-sm px-4 py-3 rounded mb-8 font-body">
+        This post contains affiliate links. We only recommend tools we use or have thoroughly tested. If you sign up via our link, we may earn a commission at no extra cost to you.
+      </div>
+    )}
+
+    <header class="mb-12">
+      <h1 class="font-display text-3xl md:text-5xl mb-4 leading-tight" style="font-size: clamp(1.75rem, 5vw, 3.5rem); font-variation-settings: 'opsz' 144">
+        {post.title}
+      </h1>
+      {post.excerpt && <p class="font-body text-muted text-lg">{post.excerpt}</p>}
+      <div class="flex items-center gap-4 mt-6 text-xs uppercase tracking-widest text-muted font-body">
+        {post.author?.name && <span>{post.author.name}</span>}
+        {post.publishedAt && (
+          <time datetime={post.publishedAt}>
+            {new Date(post.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+          </time>
+        )}
+      </div>
+    </header>
+
+    <!-- Portable Text body rendered here in Phase 4 -->
+    <div class="font-body leading-relaxed space-y-4 text-ink">
+      {!post.body && <p class="text-muted">[Post body will render here]</p>}
+    </div>
+
+    {post.affiliateProducts?.length > 0 && (
+      <aside class="mt-16 border-t border-rule pt-12">
+        <h2 class="font-display text-2xl mb-6" style="font-variation-settings: 'opsz' 72">Tools mentioned in this post</h2>
+        <div class="space-y-4">
+          {post.affiliateProducts.map((p: any) => (
+            <div class="flex items-start justify-between gap-4 border border-rule p-4 rounded">
+              <div>
+                <h3 class="font-display text-lg">{p.name}</h3>
+                <p class="font-body text-muted text-sm">{p.description}</p>
+              </div>
+              <a href={p.affiliateUrl} target="_blank" rel="noopener noreferrer sponsored"
+                class="bg-terracotta text-cream font-body text-sm font-medium px-4 py-2 rounded-full flex-shrink-0 hover:-translate-y-0.5 transition-all">
+                Visit →
+              </a>
+            </div>
+          ))}
+        </div>
+      </aside>
+    )}
+
+    <aside class="mt-16 bg-ink text-cream px-8 py-10 rounded">
+      <h2 class="font-display text-2xl mb-3 text-cream" style="font-variation-settings: 'opsz' 72">Need help with this?</h2>
+      <p class="font-body text-cream/70 mb-6">We build websites for UK small businesses. Let's talk about your project.</p>
+      <a href="/contact" class="bg-terracotta text-cream font-body font-medium px-6 py-3 rounded-full hover:-translate-y-0.5 transition-all inline-block">
+        Get a free quote →
+      </a>
+    </aside>
+  </article>
+</BaseLayout>

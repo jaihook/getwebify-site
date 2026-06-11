@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getAffiliateProducts } from '../lib/sanity';
+
+const products = await getAffiliateProducts();
+const categories = [...new Set(products.map((p: any) => p.category).filter(Boolean))] as string[];
+---
+
+<BaseLayout
+  title="Tools We Recommend — Getwebify"
+  description="Curated tools and services we use and recommend for building great websites. Some links are affiliate links."
+>
+  <section class="py-20 md:py-32 px-6 md:px-10 max-w-[1200px] mx-auto">
+    <div class="bg-forest/10 border border-forest/20 text-forest text-sm px-4 py-3 rounded mb-12 font-body max-w-2xl">
+      Some links on this page are affiliate links. If you sign up via our link, we may earn a commission — at no extra cost to you. We only list tools we genuinely use or recommend.
+    </div>
+
+    <h1 class="font-display text-4xl md:text-6xl mb-2" style="font-size: clamp(2rem, 6vw, 4rem); font-variation-settings: 'opsz' 144">
+      Tools we <em style="font-style: italic">actually use</em>
+    </h1>
+    <hr class="border-rule mb-12" />
+
+    {products.length === 0 && <p class="font-body text-muted">Recommendations coming soon.</p>}
+
+    {categories.map((cat) => (
+      <div class="mb-16">
+        <h2 class="font-display text-2xl mb-6" style="font-variation-settings: 'opsz' 72">{cat}</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.filter((p: any) => p.category === cat).map((p: any) => (
+            <div class="reveal border border-rule p-6 flex flex-col gap-4">
+              <div class="flex-1">
+                <h3 class="font-display text-xl mb-2">{p.name}</h3>
+                <p class="font-body text-muted text-sm">{p.description}</p>
+              </div>
+              <a href={p.affiliateUrl} target="_blank" rel="noopener noreferrer sponsored"
+                class="bg-terracotta text-cream font-body text-sm font-medium px-4 py-2 rounded-full text-center hover:-translate-y-0.5 transition-all">
+                Visit {p.name} →
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+</BaseLayout>

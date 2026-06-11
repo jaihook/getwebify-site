@@ -1,1 +1,71 @@
 @import "tailwindcss";
+
+@theme {
+  --color-cream: #F7F3EE;
+  --color-ink: #141210;
+  --color-terracotta: #C45C1A;
+  --color-forest: #1A3A2A;
+  --color-muted: #8A8480;
+  --color-rule: #E2DDD8;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Instrument Sans', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    background-color: #F7F3EE;
+    color: #141210;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+  }
+
+  *:focus-visible {
+    outline: 2px solid #C45C1A;
+    outline-offset: 2px;
+  }
+
+  .word {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .word:nth-child(2) { animation-delay: 0.1s; }
+  .word:nth-child(3) { animation-delay: 0.2s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: none; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .nav-link {
+    background: linear-gradient(currentColor, currentColor) bottom / 0% 1px no-repeat;
+    transition: background-size 0.2s;
+    padding-bottom: 1px;
+  }
+  .nav-link:hover { background-size: 100% 1px; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .wa-dot { animation: pulse 2s ease-in-out infinite; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .word, .reveal, .wa-dot { animation: none; transition: none; }
+    .reveal { opacity: 1; transform: none; }
+  }
+}

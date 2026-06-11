@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSiteSettings } from '../lib/sanity';
+
+const settings = await getSiteSettings();
+---
+
+<BaseLayout
+  title={`About — ${settings?.businessName ?? 'Getwebify'}`}
+  description="We're a UK web agency that builds fast, beautiful websites for small businesses."
+>
+  <section class="py-20 md:py-32 px-6 md:px-10 max-w-[1200px] mx-auto">
+    <h1
+      class="font-display text-4xl md:text-6xl mb-6"
+      style="font-size: clamp(2rem, 6vw, 4rem); font-variation-settings: 'opsz' 144"
+    >
+      About <em style="font-style: italic">Getwebify</em>
+    </h1>
+    <hr class="border-rule mb-12" />
+
+    <div class="grid md:grid-cols-2 gap-16 max-w-4xl">
+      <div class="space-y-6 font-body text-ink leading-relaxed">
+        <p class="text-lg">
+          We're a UK-based web agency helping small businesses get online properly — fast sites, great design, real results.
+        </p>
+        <p class="text-muted">
+          Every website we build is designed to do one thing: win you business. That means clear messaging, strong calls to action, and the kind of design that makes people trust you before they've even read a word.
+        </p>
+        <p class="text-muted">
+          We use modern tools like Astro and Sanity so your site is fast, easy for you to manage, and built to last.
+        </p>
+      </div>
+
+      <div class="space-y-8">
+        <div class="reveal">
+          <p class="font-display text-5xl text-terracotta mb-1" style="font-variation-settings: 'opsz' 144">50+</p>
+          <p class="font-body text-muted uppercase tracking-widest text-xs">UK businesses helped</p>
+        </div>
+        <div class="reveal">
+          <p class="font-display text-5xl text-terracotta mb-1" style="font-variation-settings: 'opsz' 144">5★</p>
+          <p class="font-body text-muted uppercase tracking-widest text-xs">Average client rating</p>
+        </div>
+        <div class="reveal">
+          <p class="font-display text-5xl text-terracotta mb-1" style="font-variation-settings: 'opsz' 144">2023</p>
+          <p class="font-body text-muted uppercase tracking-widest text-xs">Founded in the UK</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 px-6 md:px-10 max-w-[1200px] mx-auto border-t border-rule">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <p class="font-display text-2xl md:text-3xl" style="font-variation-settings: 'opsz' 72">Want to work with us?</p>
+      <a href="/contact" class="bg-terracotta text-cream font-body font-medium px-6 py-3 rounded-full hover:-translate-y-0.5 transition-all self-start">
+        Get in touch →
+      </a>
+    </div>
+  </section>
+</BaseLayout>

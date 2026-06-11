@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSiteSettings } from '../lib/sanity';
+
+const settings = await getSiteSettings();
+const waNumber = settings?.whatsapp ?? '447446508333';
+---
+
+<BaseLayout
+  title={`Message received — ${settings?.businessName ?? 'Getwebify'}`}
+  description="Thanks for getting in touch. We'll be back in touch within one business day."
+  noIndex={true}
+>
+  <section class="min-h-screen flex flex-col justify-center items-center px-6 text-center">
+    <p class="font-body text-xs uppercase tracking-widest text-muted mb-6">Message received</p>
+    <h1 class="font-display text-4xl md:text-6xl mb-6 max-w-2xl" style="font-variation-settings: 'opsz' 144">
+      We'll be in touch <em style="font-style: italic">soon.</em>
+    </h1>
+    <p class="font-body text-muted max-w-md mb-10">
+      Expect a reply within one business day. Message us on WhatsApp if it's urgent.
+    </p>
+    <div class="flex flex-wrap gap-4 justify-center">
+      <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noopener noreferrer"
+        class="bg-terracotta text-cream font-body font-medium px-6 py-3 rounded-full hover:-translate-y-0.5 transition-all">
+        Message on WhatsApp
+      </a>
+      <a href="/" class="border border-rule font-body font-medium px-6 py-3 rounded-full hover:border-terracotta hover:text-terracotta transition-all">
+        Back to home
+      </a>
+    </div>
+  </section>
+</BaseLayout>
