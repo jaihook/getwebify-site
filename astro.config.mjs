@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 import sanity from '@sanity/astro';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
+import vercel from '@astrojs/vercel';
 
 const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
   process.env.NODE_ENV ?? 'development',
@@ -15,6 +16,7 @@ const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
 export default defineConfig({
   site: 'https://www.getwebify.uk',
   output: 'static',
+  adapter: vercel(),
   vite: {
     plugins: [tailwindcss()],
   },
