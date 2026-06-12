@@ -1,6 +1,7 @@
 # CLAUDE.md
 
 @business-development.md
+@prospects-steps.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -20,6 +21,10 @@ Revenue-generating business website for **Getwebify** — a UK web services agen
 npm run dev          # dev server
 npm run build        # production build
 npm run preview      # preview build output
+
+# Prospect outreach (see prospects-steps.md)
+npm run prospect -- --trade plumber --city oxford           # dry run
+npm run prospect -- --trade plumber --city oxford --send    # send emails
 
 # Sanity Studio (embedded at /studio route via @sanity/astro)
 npx sanity@latest typegen generate   # regenerate TS types after schema changes
@@ -86,6 +91,8 @@ getwebify-site/
 | `Review` | `clientName`, `rating` (1-5), `quote`, `projectType`, `date` |
 | `CaseStudy` | `title`, `slug`, `clientAnonymised`, `problem`, `solution`, `result`, `images[]` |
 | `AffiliateProduct` | `name`, `description`, `logo`, `affiliateUrl`, `utmParams`, `category`, `featured` (bool) |
+| `Lead` | `name`, `business`, `email`, `phone`, `projectType`, `message`, `submittedAt`, `status` (new/contacted/proposal/won/lost), `notes` |
+| `Prospect` | `businessName`, `website`, `email`, `phone`, `trade`, `city`, `siteScore`, `siteIssues[]`, `outreachStatus` (pending/sent/replied/booked/won/lost), `emailSentAt`, `notes` |
 
 ## Design System
 
@@ -151,11 +158,14 @@ Standard Tailwind (`sm:640 md:768 lg:1024 xl:1280`). Max content width `1200px`.
 PUBLIC_SANITY_PROJECT_ID=
 PUBLIC_SANITY_DATASET=production
 SANITY_API_TOKEN=                  # server-side only (write token)
-RESEND_API_KEY=                    # contact form email delivery
+RESEND_API_KEY=                    # contact form + subscribe + prospect emails
+RESEND_AUDIENCE_ID=                # Resend audience for newsletter subscribers
 GOOGLE_SERVICE_ACCOUNT_KEY=        # stringified JSON — service account for Sheets API
 GOOGLE_SHEET_ID=                   # from Sheet URL (/d/<ID>/)
 TURNSTILE_SECRET_KEY=              # Cloudflare dashboard — server-side only
 PUBLIC_TURNSTILE_SITE_KEY=         # Cloudflare dashboard — safe to expose in client
+PUBLIC_GA_MEASUREMENT_ID=G-F9DTSSKE1J  # GA4 — gated by Cookiebot consent
+FIRECRAWL_API_KEY=                 # app.firecrawl.dev — local only, not in Vercel
 ```
 
 ## Key Patterns
@@ -197,21 +207,10 @@ Every blog post ends with CTA: "Need help with X? Let's talk →"
 4. ✅ Component build — all 10 in `src/components/`, wired into `BaseLayout.astro` (Header, Footer, WhatsAppButton auto-included on every page)
 5. ✅ Sales funnel wiring — all pages done: index, blog/index, blog/[slug], contact, reviews
 6. ✅ SEO — `site` URL set, `sitemap()` wired, `robots.txt` created, Article JSON-LD on `blog/[slug].astro`
-7. ⏳ Vercel deployment + custom domain `www.getwebify.uk` + env vars + Sanity webhook
-8. ⏳ Contact form API (`src/pages/api/contact.ts`) — requires `output: 'hybrid'` in astro.config.mjs
-
-### Phase 6 tasks (start here next session)
-
-- `astro.config.mjs` — add `site: 'https://www.getwebify.uk'` + `sitemap()` integration
-- `public/robots.txt` — allow all, `Sitemap: https://www.getwebify.uk/sitemap-index.xml`
-- `src/pages/blog/[slug].astro` — Article JSON-LD (`BlogPosting`, `headline`, `datePublished`, `author`)
-
-### Phase 8 files to create
-
-- `src/pages/api/contact.ts` — Astro API endpoint
-- `src/lib/sheets.ts` — Google Sheets API v4 service account append
-- `src/lib/turnstile.ts` — Cloudflare Turnstile server-side verify
-- `astro.config.mjs` — change `output: 'static'` → `output: 'hybrid'` so `/api/contact` is server-side
+7. ✅ Vercel deployment + custom domain `www.getwebify.uk` + env vars
+8. ✅ Contact form + subscribe API — Turnstile, Sheets, Resend, Sanity leads
+9. ✅ Analytics + consent — GA4 (G-F9DTSSKE1J) gated behind Cookiebot (ID: 636c610c-9c92-4ca6-8e70-24132617618d)
+10. ✅ Prospect outreach pipeline — Firecrawl + Resend cold email CLI + Sanity CRM
 
 ## Dependencies
 
