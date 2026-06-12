@@ -33,6 +33,7 @@ export default defineConfig({
             S.documentTypeListItem('author').title('Authors'),
             S.divider(),
             S.documentTypeListItem('lead').title('Leads'),
+            S.documentTypeListItem('prospect').title('Prospects'),
           ]),
     }),
     visionTool(),

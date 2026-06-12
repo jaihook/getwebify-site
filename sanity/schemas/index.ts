@@ -6,6 +6,7 @@ import { review } from './review';
 import { caseStudy } from './caseStudy';
 import { affiliateProduct } from './affiliateProduct';
 import { lead } from './lead';
+import { prospect } from './prospect';
 
 export const schemaTypes = [
   post,
@@ -16,4 +17,5 @@ export const schemaTypes = [
   caseStudy,
   affiliateProduct,
   lead,
+  prospect,
 ];
