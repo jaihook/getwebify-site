@@ -36,12 +36,25 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const turnstileOk = await verifyTurnstile(cfToken);
-  if (!turnstileOk) {
-    return new Response(JSON.stringify({ error: 'Bot check failed' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
+  // Enforce Turnstile only when the secret key is configured (i.e. in production).
+  // Local dev without TURNSTILE_SECRET_KEY skips the check so forms work without
+  // spinning up Cloudflare creds. In prod, every submission must carry a valid token
+  // — both EmailCapture (explicit widget) and footer (invisible widget) supply one.
+  const turnstileSecret = import.meta.env.TURNSTILE_SECRET_KEY;
+  if (turnstileSecret) {
+    if (!cfToken) {
+      return new Response(JSON.stringify({ error: 'Bot check required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    const turnstileOk = await verifyTurnstile(cfToken);
+    if (!turnstileOk) {
+      return new Response(JSON.stringify({ error: 'Bot check failed' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
   }
 
   await Promise.allSettled([
