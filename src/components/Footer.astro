@@ -79,7 +79,7 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
             Subscribe →
           </button>
           {TURNSTILE_SITE_KEY && (
-            <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-size="invisible" data-theme="dark"></div>
+            <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-size="invisible" data-theme="dark" data-callback="footerTurnstileCallback"></div>
           )}
         </form>
         <p id="footer-subscribe-error" class="hidden font-body text-xs text-red-400">
@@ -108,24 +108,19 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 <script>
   const form = document.getElementById('footer-subscribe-form') as HTMLFormElement | null;
   if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const fd = new FormData(form);
-      const email = (fd.get('email') as string).trim();
-      const cfToken = (fd.get('cf-turnstile-response') as string) ?? '';
-      const btn = form.querySelector('button') as HTMLButtonElement;
-      const wrap = document.getElementById('footer-subscribe-wrap');
-      const success = document.getElementById('footer-subscribe-success');
-      const errorEl = document.getElementById('footer-subscribe-error');
+    const turnstileDiv = form.querySelector<HTMLElement>('.cf-turnstile');
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    const wrap = document.getElementById('footer-subscribe-wrap');
+    const success = document.getElementById('footer-subscribe-success');
+    const errorEl = document.getElementById('footer-subscribe-error');
+    let pendingEmail = '';
 
-      btn.disabled = true;
-      btn.textContent = '…';
-
+    async function submitEmail(token: string) {
       try {
         const res = await fetch('/api/subscribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, source: 'footer', 'cf-turnstile-response': cfToken }),
+          body: JSON.stringify({ email: pendingEmail, source: 'footer', 'cf-turnstile-response': token }),
         });
         if (res.ok) {
           wrap?.classList.add('hidden');
@@ -134,11 +129,27 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
           errorEl?.classList.remove('hidden');
           btn.disabled = false;
           btn.textContent = 'Subscribe →';
+          (window as any).turnstile?.reset(turnstileDiv);
         }
       } catch {
         errorEl?.classList.remove('hidden');
         btn.disabled = false;
         btn.textContent = 'Subscribe →';
+        (window as any).turnstile?.reset(turnstileDiv);
+      }
+    }
+
+    (window as any).footerTurnstileCallback = (token: string) => submitEmail(token);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      pendingEmail = ((new FormData(form).get('email') as string) ?? '').trim();
+      btn.disabled = true;
+      btn.textContent = '…';
+      if (turnstileDiv && (window as any).turnstile) {
+        (window as any).turnstile.execute(turnstileDiv);
+      } else {
+        submitEmail('');
       }
     });
   }

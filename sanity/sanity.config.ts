@@ -31,6 +31,8 @@ export default defineConfig({
             S.divider(),
             S.documentTypeListItem('affiliateProduct').title('Affiliate Products'),
             S.documentTypeListItem('author').title('Authors'),
+            S.divider(),
+            S.documentTypeListItem('lead').title('Leads'),
           ]),
     }),
     visionTool(),
