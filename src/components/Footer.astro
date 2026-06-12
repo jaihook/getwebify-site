@@ -96,7 +96,10 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
   <div class="border-t border-cream/10">
     <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 font-body text-xs text-cream/40">
       <p>&copy; {year} Getwebify Ltd. All rights reserved.</p>
-      <p>Registered in England &amp; Wales</p>
+      <div class="flex gap-4">
+        <a href="/privacy" class="hover:text-cream transition-colors">Privacy Policy</a>
+        <p>Registered in England &amp; Wales</p>
+      </div>
     </div>
   </div>
 </footer>
