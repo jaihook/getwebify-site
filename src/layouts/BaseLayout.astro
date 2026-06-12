@@ -27,6 +27,7 @@ const GA_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="636c610c-9c92-4ca6-8e70-24132617618d" type="text/javascript" async></script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <link rel="canonical" href={canonicalURL} />
@@ -56,14 +57,9 @@ const GA_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
 
     <meta name="generator" content={Astro.generator} />
 
-    {GA_ID && <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>}
+    {GA_ID && <script type="text/plain" data-cookieconsent="statistics" async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>}
     {GA_ID && (
-      <script define:vars={{ GA_ID }}>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', GA_ID);
-      </script>
+      <script type="text/plain" data-cookieconsent="statistics" set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}></script>
     )}
   </head>
   <body class="bg-cream text-ink">
