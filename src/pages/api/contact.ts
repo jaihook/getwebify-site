@@ -5,22 +5,33 @@ import { appendContactRow } from '../../lib/sheets';
 
 export const prerender = false;
 
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]+\.[^\s@]{2,}$/;
+
+// Strip CRLF to prevent header injection; hard-cap length
+function sanitize(v: string, max = 200): string {
+  return v.replace(/[\r\n]/g, ' ').slice(0, max);
+}
+
 export const POST: APIRoute = async ({ request, redirect }) => {
   const form = await request.formData();
 
   // honeypot
   if (form.get('website')) return redirect('/thank-you');
 
-  const name        = String(form.get('name') ?? '').trim();
-  const business    = String(form.get('business') ?? '').trim();
-  const email       = String(form.get('email') ?? '').trim();
-  const phone       = String(form.get('phone') ?? '').trim();
-  const projectType = String(form.get('projectType') ?? '').trim();
-  const message     = String(form.get('message') ?? '').trim();
+  const name        = sanitize(String(form.get('name') ?? '').trim());
+  const business    = sanitize(String(form.get('business') ?? '').trim());
+  const email       = sanitize(String(form.get('email') ?? '').trim(), 254);
+  const phone       = sanitize(String(form.get('phone') ?? '').trim(), 30);
+  const projectType = sanitize(String(form.get('projectType') ?? '').trim(), 100);
+  const message     = sanitize(String(form.get('message') ?? '').trim(), 2000);
   const cfToken     = String(form.get('cf-turnstile-response') ?? '');
 
   if (!name || !email || !projectType || !message) {
     return new Response('Missing required fields', { status: 400 });
+  }
+
+  if (!EMAIL_RE.test(email)) {
+    return new Response('Invalid email address', { status: 400 });
   }
 
   const turnstileOk = await verifyTurnstile(cfToken);
@@ -44,12 +55,13 @@ async function sendEmails({ name, business, email, phone, projectType, message }
   if (!key) return;
 
   const resend = new Resend(key);
-  const to = 'hello@getwebify.uk';
+  const internalTo = 'hello@getwebify.uk';
 
   await Promise.all([
+    // internal alert
     resend.emails.send({
       from: 'Getwebify <noreply@getwebify.uk>',
-      to,
+      to: internalTo,
       subject: `New enquiry: ${projectType} from ${name}`,
       text: [
         `Name: ${name}`,
@@ -61,11 +73,12 @@ async function sendEmails({ name, business, email, phone, projectType, message }
         message,
       ].join('\n'),
     }),
+    // auto-reply (Turnstile already verified above; name/email sanitized)
     resend.emails.send({
       from: 'Getwebify <hello@getwebify.uk>',
       to: email,
       subject: 'Thanks for getting in touch — Getwebify',
-      text: `Hi ${name},\n\nThanks for reaching out! We've received your message and will get back to you within one business day.\n\nIn the meantime, feel free to message us on WhatsApp: https://wa.me/447446508333\n\nBest,\nThe Getwebify Team`,
+      text: `Hi ${name},\n\nThanks for reaching out! We'll get back to you within one business day.\n\nIn the meantime you can message us on WhatsApp: https://wa.me/447446508333\n\nBest,\nThe Getwebify Team`,
     }),
   ]);
 }

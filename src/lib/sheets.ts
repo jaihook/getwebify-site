@@ -10,6 +10,11 @@ export interface ContactRow {
   source: string;
 }
 
+// Prevent formula injection when cell starts with =, +, -, @, tab, CR
+function sanitizeCell(v: string): string {
+  return /^[=+\-@\t\r]/.test(v) ? `'${v}` : v;
+}
+
 export async function appendContactRow(row: ContactRow): Promise<void> {
   const keyJson = import.meta.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   const sheetId = import.meta.env.GOOGLE_SHEET_ID;
@@ -25,7 +30,7 @@ export async function appendContactRow(row: ContactRow): Promise<void> {
   await sheets.spreadsheets.values.append({
     spreadsheetId: sheetId,
     range: 'Sheet1!A:H',
-    valueInputOption: 'USER_ENTERED',
+    valueInputOption: 'RAW',
     requestBody: {
       values: [[
         new Date().toISOString(),
@@ -36,7 +41,7 @@ export async function appendContactRow(row: ContactRow): Promise<void> {
         row.projectType,
         row.message,
         row.source,
-      ]],
+      ].map((v, i) => i === 0 ? v : sanitizeCell(v))],
     },
   });
 }

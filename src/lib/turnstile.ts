@@ -1,6 +1,10 @@
 export async function verifyTurnstile(token: string): Promise<boolean> {
   const secret = import.meta.env.TURNSTILE_SECRET_KEY;
-  if (!secret) return true; // skip in dev if not configured
+  if (!secret) {
+    if (import.meta.env.DEV) return true;
+    console.error('TURNSTILE_SECRET_KEY missing in production');
+    return false;
+  }
 
   const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
     method: 'POST',
