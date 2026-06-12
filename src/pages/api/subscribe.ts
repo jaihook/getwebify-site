@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
 import { Resend } from 'resend';
+import { verifyTurnstile } from '../../lib/turnstile';
 
 export const prerender = false;
 
@@ -14,19 +15,30 @@ export const POST: APIRoute = async ({ request }) => {
   let email = '';
   let source = 'website';
 
+  let cfToken = '';
   const ct = request.headers.get('content-type') ?? '';
   if (ct.includes('application/json')) {
     const body = await request.json();
     email = sanitize(String(body.email ?? '').trim());
     source = sanitize(String(body.source ?? 'website').trim(), 50);
+    cfToken = String(body['cf-turnstile-response'] ?? '');
   } else {
     const form = await request.formData();
     email = sanitize(String(form.get('email') ?? '').trim());
     source = sanitize(String(form.get('source') ?? 'website').trim(), 50);
+    cfToken = String(form.get('cf-turnstile-response') ?? '');
   }
 
   if (!email || !EMAIL_RE.test(email)) {
     return new Response(JSON.stringify({ error: 'Invalid email' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  const turnstileOk = await verifyTurnstile(cfToken);
+  if (!turnstileOk) {
+    return new Response(JSON.stringify({ error: 'Bot check failed' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });

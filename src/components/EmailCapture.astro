@@ -10,6 +10,8 @@ const {
   subtext = "We'll review your site and tell you exactly what's costing you leads. No sales pitch, no cost.",
   source = 'website',
 } = Astro.props;
+
+const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 ---
 
 <div class="bg-forest text-cream rounded-lg px-8 py-12">
@@ -27,23 +29,33 @@ const {
 
     <form
       id="email-capture-form"
-      class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+      class="flex flex-col gap-3 max-w-md mx-auto"
       data-source={source}
     >
-      <input
-        type="email"
-        name="email"
-        placeholder="your@email.co.uk"
-        required
-        autocomplete="email"
-        class="flex-1 bg-cream/10 border border-cream/20 text-cream placeholder:text-cream/40 px-4 py-3 text-sm focus:outline-none focus:border-cream/60 transition-colors rounded"
-      />
-      <button
-        type="submit"
-        class="bg-terracotta text-cream font-body font-medium px-6 py-3 whitespace-nowrap hover:-translate-y-0.5 transition-all rounded shrink-0"
-      >
-        Get free audit →
-      </button>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input
+          type="email"
+          name="email"
+          placeholder="your@email.co.uk"
+          required
+          autocomplete="email"
+          class="flex-1 bg-cream/10 border border-cream/20 text-cream placeholder:text-cream/40 px-4 py-3 text-sm focus:outline-none focus:border-cream/60 transition-colors rounded"
+        />
+        <button
+          type="submit"
+          class="bg-terracotta text-cream font-body font-medium px-6 py-3 whitespace-nowrap hover:-translate-y-0.5 transition-all rounded shrink-0"
+        >
+          Get free audit →
+        </button>
+      </div>
+
+      {TURNSTILE_SITE_KEY && (
+        <div
+          class="cf-turnstile mx-auto"
+          data-sitekey={TURNSTILE_SITE_KEY}
+          data-theme="dark"
+        ></div>
+      )}
     </form>
 
     <p id="subscribe-success" class="hidden mt-5 text-sm text-cream/80 font-body">
@@ -57,12 +69,18 @@ const {
   </div>
 </div>
 
+{TURNSTILE_SITE_KEY && (
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+)}
+
 <script>
   const form = document.getElementById('email-capture-form') as HTMLFormElement | null;
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = (new FormData(form).get('email') as string).trim();
+      const fd = new FormData(form);
+      const email = (fd.get('email') as string).trim();
+      const cfToken = (fd.get('cf-turnstile-response') as string) ?? '';
       const source = form.dataset.source ?? 'website';
       const successEl = document.getElementById('subscribe-success');
       const errorEl = document.getElementById('subscribe-error');
@@ -75,7 +93,7 @@ const {
         const res = await fetch('/api/subscribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, source }),
+          body: JSON.stringify({ email, source, 'cf-turnstile-response': cfToken }),
         });
         if (res.ok) {
           form.style.display = 'none';
@@ -84,11 +102,13 @@ const {
           errorEl?.classList.remove('hidden');
           btn.disabled = false;
           btn.textContent = 'Get free audit →';
+          (window as any).turnstile?.reset();
         }
       } catch {
         errorEl?.classList.remove('hidden');
         btn.disabled = false;
         btn.textContent = 'Get free audit →';
+        (window as any).turnstile?.reset();
       }
     });
   }

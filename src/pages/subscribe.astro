@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EmailCapture from '../components/EmailCapture.astro';
+---
+
+<BaseLayout
+  title="Free Website Tips — Getwebify"
+  description="Join UK business owners getting free, practical website and SEO tips every week. No fluff. Unsubscribe any time."
+>
+  <section class="min-h-screen flex flex-col justify-center px-6 py-16 md:py-24">
+    <div class="max-w-[560px] mx-auto w-full">
+
+      <p class="font-body text-xs uppercase tracking-widest text-muted mb-5">
+        Getwebify · Free Newsletter
+      </p>
+
+      <h1
+        class="font-display leading-tight mb-5"
+        style="font-size: clamp(2rem, 6vw, 3.5rem); font-variation-settings: 'opsz' 144"
+      >
+        Grow your business<br />
+        online — <em class="text-terracotta not-italic">for free</em>.
+      </h1>
+
+      <ul class="font-body text-sm text-muted space-y-2 mb-8">
+        {[
+          'Practical website & SEO tips UK small businesses actually use',
+          "Free site audit — we'll review your site, no sales pitch",
+          'One email a week. Unsubscribe any time.',
+        ].map((item) => (
+          <li class="flex items-start gap-2">
+            <span class="text-terracotta mt-0.5 shrink-0">→</span>
+            {item}
+          </li>
+        ))}
+      </ul>
+
+      <EmailCapture
+        heading="Get free website tips"
+        subtext="Join UK business owners who read Getwebify's weekly email — practical, honest, useful."
+        source="linktree-subscribe"
+      />
+
+      <p class="font-body text-xs text-muted text-center mt-6">
+        Trusted by businesses across Oxfordshire, Northampton, Coventry &amp; beyond.
+      </p>
+
+    </div>
+  </section>
+</BaseLayout>
