@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { verifyTurnstile } from '../../lib/turnstile';
 import { appendContactRow } from '../../lib/sheets';
+import { createLead } from '../../lib/sanity';
 
 export const prerender = false;
 
@@ -42,6 +43,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
   await Promise.allSettled([
     appendContactRow({ name, business, email, phone, projectType, message, source: 'website' }),
     sendEmails({ name, business, email, phone, projectType, message }),
+    createLead({ name, business, email, phone, projectType, message }),
   ]);
 
   return redirect('/thank-you');

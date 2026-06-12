@@ -1,7 +1,17 @@
 import { sanityClient } from 'sanity:client';
+import { createClient } from '@sanity/client';
 import { defineQuery } from 'groq';
 import imageUrlBuilder from '@sanity/image-url';
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
+
+// Server-side write client — only used in API routes, never in static pages
+const writeClient = createClient({
+  projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
+  dataset: import.meta.env.PUBLIC_SANITY_DATASET ?? 'production',
+  apiVersion: '2024-01-01',
+  token: import.meta.env.SANITY_API_TOKEN,
+  useCdn: false,
+});
 
 const builder = imageUrlBuilder(sanityClient);
 
@@ -81,4 +91,23 @@ export async function getCaseStudy(slug: string) {
 }
 export async function getAffiliateProducts() {
   return sanityClient.fetch(AFFILIATE_PRODUCTS_QUERY);
+}
+
+export interface LeadData {
+  name: string;
+  business: string;
+  email: string;
+  phone: string;
+  projectType: string;
+  message: string;
+}
+
+export async function createLead(data: LeadData): Promise<void> {
+  if (!import.meta.env.SANITY_API_TOKEN) return;
+  await writeClient.create({
+    _type: 'lead',
+    ...data,
+    submittedAt: new Date().toISOString(),
+    status: 'new',
+  });
 }
