@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import AffiliateDisclosure from '../../components/AffiliateDisclosure.astro';
 import AffiliateCard from '../../components/AffiliateCard.astro';
+import EmailCapture from '../../components/EmailCapture.astro';
 import { PortableText } from 'astro-portabletext';
 import { getPosts, getPost } from '../../lib/sanity';
 
@@ -85,7 +86,15 @@ if (!post) return Astro.redirect('/blog');
       </aside>
     )}
 
-    <aside class="mt-16 bg-ink text-cream px-8 py-10 rounded">
+    <div class="mt-16">
+      <EmailCapture
+        heading="Get your free website audit"
+        subtext="We'll review your site and tell you exactly what's costing you leads — no sales pitch, no cost."
+        source="blog-post"
+      />
+    </div>
+
+    <aside class="mt-12 bg-ink text-cream px-8 py-10 rounded">
       <h2 class="font-display text-2xl mb-3 text-cream" style="font-variation-settings: 'opsz' 72">Need help with this?</h2>
       <p class="font-body text-cream/70 mb-6">We build websites for UK small businesses. Let's talk about your project.</p>
       <a href="/contact" class="bg-terracotta text-cream font-body font-medium px-6 py-3 rounded-full hover:-translate-y-0.5 transition-all inline-block">

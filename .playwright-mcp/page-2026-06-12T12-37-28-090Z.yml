@@ -1,0 +1,149 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - navigation "Main navigation" [ref=e4]:
+      - link "Getwebify" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - list [ref=e6]:
+        - listitem [ref=e7]:
+          - link "Work" [ref=e8] [cursor=pointer]:
+            - /url: /work
+        - listitem [ref=e9]:
+          - link "Blog" [ref=e10] [cursor=pointer]:
+            - /url: /blog
+        - listitem [ref=e11]:
+          - link "Reviews" [ref=e12] [cursor=pointer]:
+            - /url: /reviews
+        - listitem [ref=e13]:
+          - link "Tools" [ref=e14] [cursor=pointer]:
+            - /url: /tools
+        - listitem [ref=e15]:
+          - link "About" [ref=e16] [cursor=pointer]:
+            - /url: /about
+      - link "Start a project" [ref=e17] [cursor=pointer]:
+        - /url: /contact
+  - main [ref=e18]:
+    - generic [ref=e19]:
+      - heading "Let's talk about your project." [level=1] [ref=e20]:
+        - text: Let's talk about your
+        - emphasis [ref=e21]: project.
+      - separator [ref=e22]
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - generic:
+            - text: Leave blank
+            - textbox
+          - generic [ref=e25]:
+            - generic [ref=e26]:
+              - generic [ref=e27]: Full name *
+              - textbox "Full name *" [ref=e28]:
+                - /placeholder: Jane Smith
+            - generic [ref=e29]:
+              - generic [ref=e30]: Business name
+              - textbox "Business name" [ref=e31]:
+                - /placeholder: Acme Ltd
+          - generic [ref=e32]:
+            - generic [ref=e33]:
+              - generic [ref=e34]: Email address *
+              - textbox "Email address *" [ref=e35]:
+                - /placeholder: jane@acme.co.uk
+            - generic [ref=e36]:
+              - generic [ref=e37]: Phone (optional)
+              - textbox "Phone (optional)" [ref=e38]:
+                - /placeholder: +44 7700 900000
+          - generic [ref=e39]:
+            - generic [ref=e40]: Project type *
+            - combobox "Project type *" [ref=e41]:
+              - option "Select…" [disabled] [selected]
+              - option "New website"
+              - option "Redesign"
+              - option "E-commerce"
+              - option "SEO / blog"
+              - option "Maintenance"
+              - option "Other"
+          - generic [ref=e42]:
+            - generic [ref=e43]: Tell us about your project *
+            - textbox "Tell us about your project *" [ref=e44]:
+              - /placeholder: What do you need? Rough budget? Timeline?
+          - generic [ref=e45]:
+            - checkbox "I agree to Getwebify processing my data to respond to this enquiry, in line with the Privacy Policy. *" [ref=e46]
+            - generic [ref=e47]:
+              - text: I agree to Getwebify processing my data to respond to this enquiry, in line with the
+              - link "Privacy Policy" [ref=e48] [cursor=pointer]:
+                - /url: /privacy
+              - text: . *
+          - button "Send enquiry" [ref=e49]
+        - complementary [ref=e50]:
+          - generic [ref=e51]:
+            - paragraph [ref=e52]: WhatsApp
+            - link "Message us on WhatsApp" [ref=e53] [cursor=pointer]:
+              - /url: https://wa.me/447446508333
+              - text: Message us on WhatsApp
+          - generic [ref=e55]:
+            - paragraph [ref=e56]: Email
+            - link "hello@getwebify.uk" [ref=e57] [cursor=pointer]:
+              - /url: mailto:hello@getwebify.uk
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Response time
+            - paragraph [ref=e60]: Within one business day
+          - separator [ref=e61]
+          - paragraph [ref=e62]: Not ready to fill in a form? Message us on WhatsApp — it's the fastest way to get a response.
+  - contentinfo [ref=e63]:
+    - generic [ref=e64]:
+      - generic [ref=e65]:
+        - link "Getwebify" [ref=e66] [cursor=pointer]:
+          - /url: /
+        - paragraph [ref=e67]: UK web agency building fast, beautiful websites that win clients and rank on Google.
+      - generic [ref=e68]:
+        - paragraph [ref=e69]: Pages
+        - list [ref=e70]:
+          - listitem [ref=e71]:
+            - link "Work" [ref=e72] [cursor=pointer]:
+              - /url: /work
+          - listitem [ref=e73]:
+            - link "Blog" [ref=e74] [cursor=pointer]:
+              - /url: /blog
+          - listitem [ref=e75]:
+            - link "Reviews" [ref=e76] [cursor=pointer]:
+              - /url: /reviews
+          - listitem [ref=e77]:
+            - link "Tools" [ref=e78] [cursor=pointer]:
+              - /url: /tools
+          - listitem [ref=e79]:
+            - link "About" [ref=e80] [cursor=pointer]:
+              - /url: /about
+          - listitem [ref=e81]:
+            - link "Contact" [ref=e82] [cursor=pointer]:
+              - /url: /contact
+      - generic [ref=e83]:
+        - paragraph [ref=e84]: Get in touch
+        - generic [ref=e85]:
+          - link "WhatsApp us" [ref=e86] [cursor=pointer]:
+            - /url: https://wa.me/447446508333
+            - img [ref=e87]
+            - text: WhatsApp us
+          - link "hello@getwebify.uk" [ref=e90] [cursor=pointer]:
+            - /url: mailto:hello@getwebify.uk
+            - img [ref=e91]
+            - text: hello@getwebify.uk
+    - generic [ref=e95]:
+      - paragraph [ref=e96]: © 2026 Getwebify Ltd. All rights reserved.
+      - paragraph [ref=e97]: Registered in England & Wales
+  - link "Chat on WhatsApp" [ref=e98] [cursor=pointer]:
+    - /url: https://wa.me/447446508333
+    - img [ref=e100]
+    - generic [ref=e103]: Chat with us
+  - generic [ref=e106]:
+    - button "Menu" [ref=e107]:
+      - img [ref=e109]
+      - generic: Menu
+    - button "Inspect" [ref=e113]:
+      - img [ref=e115]
+      - generic: Inspect
+    - button "Audit" [ref=e117]:
+      - img [ref=e119]
+      - generic: Audit
+    - button "Settings" [ref=e122]:
+      - img [ref=e124]
+      - generic: Settings

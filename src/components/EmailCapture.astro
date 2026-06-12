@@ -1,0 +1,95 @@
+---
+interface Props {
+  heading?: string;
+  subtext?: string;
+  source?: string;
+}
+
+const {
+  heading = 'Get your free website audit',
+  subtext = "We'll review your site and tell you exactly what's costing you leads. No sales pitch, no cost.",
+  source = 'website',
+} = Astro.props;
+---
+
+<div class="bg-forest text-cream rounded-lg px-8 py-12">
+  <div class="max-w-xl mx-auto text-center">
+    <p class="text-xs uppercase tracking-widest text-cream/50 mb-3 font-body">Free for UK Businesses</p>
+    <h3
+      class="font-display text-2xl md:text-3xl mb-3 text-cream"
+      style="font-variation-settings: 'opsz' 72"
+    >
+      {heading}
+    </h3>
+    <p class="font-body text-cream/70 mb-8 text-sm md:text-base leading-relaxed max-w-md mx-auto">
+      {subtext}
+    </p>
+
+    <form
+      id="email-capture-form"
+      class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+      data-source={source}
+    >
+      <input
+        type="email"
+        name="email"
+        placeholder="your@email.co.uk"
+        required
+        autocomplete="email"
+        class="flex-1 bg-cream/10 border border-cream/20 text-cream placeholder:text-cream/40 px-4 py-3 text-sm focus:outline-none focus:border-cream/60 transition-colors rounded"
+      />
+      <button
+        type="submit"
+        class="bg-terracotta text-cream font-body font-medium px-6 py-3 whitespace-nowrap hover:-translate-y-0.5 transition-all rounded shrink-0"
+      >
+        Get free audit →
+      </button>
+    </form>
+
+    <p id="subscribe-success" class="hidden mt-5 text-sm text-cream/80 font-body">
+      ✓ Done — we'll send your audit within 24 hours.
+    </p>
+    <p id="subscribe-error" class="hidden mt-5 text-sm text-red-300 font-body">
+      Something went wrong. <a href="https://wa.me/447446508333" class="underline">WhatsApp us instead.</a>
+    </p>
+
+    <p class="mt-5 text-xs text-cream/40 font-body">No spam. Unsubscribe any time.</p>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('email-capture-form') as HTMLFormElement | null;
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = (new FormData(form).get('email') as string).trim();
+      const source = form.dataset.source ?? 'website';
+      const successEl = document.getElementById('subscribe-success');
+      const errorEl = document.getElementById('subscribe-error');
+      const btn = form.querySelector('button') as HTMLButtonElement;
+
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+
+      try {
+        const res = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, source }),
+        });
+        if (res.ok) {
+          form.style.display = 'none';
+          successEl?.classList.remove('hidden');
+        } else {
+          errorEl?.classList.remove('hidden');
+          btn.disabled = false;
+          btn.textContent = 'Get free audit →';
+        }
+      } catch {
+        errorEl?.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Get free audit →';
+      }
+    });
+  }
+</script>

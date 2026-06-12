@@ -1,0 +1,418 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EmailCapture from '../components/EmailCapture.astro';
+
+interface CityData {
+  slug: string;
+  name: string;
+  county: string;
+  description: string;
+  intro: string;
+  businesses: string[];
+  nearby: string[];
+  whyPoint3: string;
+}
+
+export function getStaticPaths() {
+  const cities: CityData[] = [
+    {
+      slug: 'oxfordshire',
+      name: 'Oxfordshire',
+      county: 'Oxfordshire',
+      description: 'Affordable web design for Oxfordshire businesses. Websites from £499 that rank on Google and convert visitors into leads.',
+      intro: 'From Oxford city centre to the market towns of Banbury, Witney, and Abingdon — Oxfordshire is full of ambitious small businesses that need websites that actually work.',
+      businesses: ['Builders & contractors', 'Estate agents', 'Restaurants & cafés', 'Professional services', 'Retailers & independent shops', 'Health & wellness clinics'],
+      nearby: ['Oxford', 'Banbury', 'Witney', 'Abingdon', 'Didcot', 'Bicester', 'Henley-on-Thames'],
+      whyPoint3: 'We build websites for Oxfordshire businesses that load fast, look great on mobile, and are found on Google by local customers.',
+    },
+    {
+      slug: 'oxford',
+      name: 'Oxford',
+      county: 'Oxfordshire',
+      description: 'Web design for Oxford businesses. Professional websites from £499 that rank on Google and win you more clients.',
+      intro: "Oxford is a city where first impressions matter. Whether you're a tutor, restaurateur, tradesperson, or consultant — your website is your 24/7 salesperson.",
+      businesses: ['Tutors & private educators', 'Restaurants & hospitality', 'Professional services & consultants', 'Independent retailers', 'Tradespeople & builders', 'Clinics & therapists'],
+      nearby: ['Cowley', 'Headington', 'Summertown', 'Botley', 'Abingdon', 'Kidlington'],
+      whyPoint3: 'Oxford visitors are discerning. A slow, outdated website signals unprofessionalism in a city that expects excellence.',
+    },
+    {
+      slug: 'banbury',
+      name: 'Banbury',
+      county: 'Oxfordshire',
+      description: 'Web design for Banbury businesses. Affordable, professional websites from £499 for North Oxfordshire traders and SMEs.',
+      intro: 'Banbury is the commercial heart of North Oxfordshire — a thriving market town with a strong base of independent traders, tradespeople, and growing businesses.',
+      businesses: ['Builders & tradespeople', 'Independent retailers', 'Restaurants & cafés', 'Professional services', 'Manufacturing & engineering', 'Healthcare providers'],
+      nearby: ['Brackley', 'Chipping Norton', 'Bicester', 'Stratford-upon-Avon', 'Daventry'],
+      whyPoint3: 'Banbury businesses are competing with national chains online. A fast, well-ranked website levels the playing field.',
+    },
+    {
+      slug: 'coventry',
+      name: 'Coventry',
+      county: 'West Midlands',
+      description: 'Web design for Coventry businesses. Websites from £499 that get you found on Google and win you leads in a competitive city.',
+      intro: "Coventry is one of the UK's fastest-growing cities — a hub for manufacturing, tech, and independent business. Stand out with a professional website that works.",
+      businesses: ['Manufacturers & engineers', 'Retailers & e-commerce', 'Restaurants & takeaways', 'Tradespeople & builders', 'Tech startups', 'Health & beauty businesses'],
+      nearby: ['Kenilworth', 'Rugby', 'Leamington Spa', 'Nuneaton', 'Bedworth', 'Birmingham'],
+      whyPoint3: "With hundreds of thousands of potential customers in and around Coventry, visibility on Google isn't optional — it's essential.",
+    },
+    {
+      slug: 'cambridge',
+      name: 'Cambridge',
+      county: 'Cambridgeshire',
+      description: 'Web design for Cambridge businesses. High-quality websites from £499 for a city with high expectations.',
+      intro: 'Cambridge attracts some of the sharpest minds in the world. Your website needs to match their expectations — clean, fast, technically excellent, and credible.',
+      businesses: ['Tech startups & scale-ups', 'Consultants & advisors', 'Independent retailers', 'Restaurants & cafés', 'Tutors & educators', 'Professional & financial services'],
+      nearby: ['Ely', 'Huntingdon', 'St Ives', 'Saffron Walden', 'Royston', 'Newmarket'],
+      whyPoint3: "Cambridge's audience is educated and discerning. A slow or dated website doesn't just lose you a click — it loses you credibility.",
+    },
+    {
+      slug: 'rugby',
+      name: 'Rugby',
+      county: 'Warwickshire',
+      description: 'Web design for Rugby businesses. Straightforward websites from £499 that bring in local customers and put you ahead of the competition.',
+      intro: 'Rugby is a proud market town with a strong community of local traders and growing businesses. A professional website puts you ahead of competitors who still rely on word of mouth alone.',
+      businesses: ['Builders & tradespeople', 'Independent retailers', 'Restaurants & cafés', 'Professional services', 'Sports & leisure businesses', 'Healthcare & wellbeing'],
+      nearby: ['Coventry', 'Leamington Spa', 'Northampton', 'Lutterworth', 'Daventry', 'Hinckley'],
+      whyPoint3: "Rugby's business community is growing fast. Get online properly now before competitors take the top Google spots.",
+    },
+    {
+      slug: 'brackley',
+      name: 'Brackley',
+      county: 'Northamptonshire',
+      description: 'Web design for Brackley businesses. Fast, affordable websites from £499 for this thriving Northamptonshire town.',
+      intro: 'Brackley is a rapidly growing town at the heart of Motorsport Valley — home to F1 teams, engineering firms, and a thriving local business community that deserves world-class web presence.',
+      businesses: ['Engineering & motorsport firms', 'Independent retailers', 'Builders & tradespeople', 'Restaurants & hospitality', 'Professional services', 'Healthcare providers'],
+      nearby: ['Banbury', 'Northampton', 'Towcester', 'Buckingham', 'Silverstone', 'Bicester'],
+      whyPoint3: 'Brackley businesses operate in a high-performance environment. Your website should reflect that standard.',
+    },
+    {
+      slug: 'northampton',
+      name: 'Northampton',
+      county: 'Northamptonshire',
+      description: 'Web design for Northampton businesses. Websites from £499 that rank locally and bring in consistent enquiries.',
+      intro: "Northampton is one of the Midlands' biggest commercial centres — a city with genuine ambition and a diverse business community that deserves a strong online presence.",
+      businesses: ['Retailers & e-commerce', 'Builders & tradespeople', 'Restaurants & takeaways', 'Professional services', 'Logistics & distribution firms', 'Healthcare & dental'],
+      nearby: ['Rugby', 'Brackley', 'Wellingborough', 'Kettering', 'Daventry', 'Milton Keynes'],
+      whyPoint3: "Northampton's commercial scene is competitive. A well-built website with local SEO gets you in front of customers before your competitors do.",
+    },
+  ];
+  return cities.map((city) => ({
+    params: { city: city.slug },
+    props: { city },
+  }));
+}
+
+interface Props {
+  city: CityData;
+}
+
+const { city } = Astro.props;
+
+const pageTitle = `Web Design in ${city.name} | From £499 | Getwebify`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'Getwebify',
+  url: 'https://www.getwebify.uk',
+  telephone: '+447446508333',
+  email: 'hello@getwebify.uk',
+  priceRange: '££',
+  areaServed: { '@type': 'City', name: city.name },
+  address: {
+    '@type': 'PostalAddress',
+    addressRegion: city.county,
+    addressCountry: 'GB',
+  },
+  description: city.description,
+  offers: {
+    '@type': 'Offer',
+    name: 'Website Design',
+    price: '499',
+    priceCurrency: 'GBP',
+    description: `Professional website design for businesses in ${city.name}`,
+  },
+};
+
+const services = [
+  { symbol: '◻', title: 'Business websites', desc: 'Clean, fast, mobile-first sites built to convert visitors into enquiries.' },
+  { symbol: '◈', title: 'E-commerce', desc: 'Sell online with Shopify or WooCommerce, set up and optimised properly.' },
+  { symbol: '◉', title: 'SEO & blogging', desc: 'Content that ranks on Google and brings in organic leads month after month.' },
+  { symbol: '◫', title: 'Landing pages', desc: 'High-converting pages for specific services, areas, or campaigns.' },
+  { symbol: '◳', title: 'Site maintenance', desc: 'Monthly care plans to keep your site secure, fast, and up to date.' },
+  { symbol: '◪', title: 'Local SEO', desc: `Get found by customers in ${city.name} searching for exactly what you do.` },
+];
+
+const pricing = [
+  {
+    tier: 'Starter',
+    price: '£499',
+    popular: false,
+    features: ['5-page website', 'Mobile-first design', 'Contact form', 'Google Analytics', 'Hosting guidance'],
+  },
+  {
+    tier: 'Business',
+    price: '£899',
+    popular: true,
+    features: ['Up to 10 pages', 'Blog setup', 'SEO foundations', 'Google Business Profile', 'Speed optimisation'],
+  },
+  {
+    tier: 'Growth',
+    price: '£1,499+',
+    popular: false,
+    features: ['Full SEO strategy', 'Blog content creation', 'E-commerce ready', 'Monthly reporting', 'Ongoing support'],
+  },
+];
+
+const whyPoints = [
+  {
+    n: '01',
+    heading: 'Your competitors are already online',
+    body: `When someone in ${city.name} searches for your service, they click the first few results. If you're not there — or if your site looks outdated — that customer goes to someone else.`,
+  },
+  {
+    n: '02',
+    heading: "Word of mouth alone won't scale",
+    body: "Referrals are great — but they have a ceiling. A website works 24/7, reaches people who've never heard of you, and turns strangers into paying customers while you sleep.",
+  },
+  {
+    n: '03',
+    heading: 'A bad website is worse than no website',
+    body: city.whyPoint3,
+  },
+];
+---
+
+<BaseLayout title={pageTitle} description={city.description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <!-- HERO -->
+  <section class="relative overflow-hidden py-24 md:py-36 px-6 md:px-10">
+    <div class="max-w-[1200px] mx-auto relative z-10">
+      <p class="text-xs uppercase tracking-widest text-muted font-body mb-5 word">
+        {city.county} · United Kingdom
+      </p>
+      <h1
+        class="font-display leading-tight mb-6"
+        style="font-size: clamp(2.5rem, 7vw, 5.5rem); font-variation-settings: 'opsz' 144"
+      >
+        <span class="word">Web Design</span><br />
+        <span class="word">in <em class="text-terracotta not-italic">{city.name}</em>.</span>
+      </h1>
+      <p class="font-body text-lg text-muted max-w-[520px] mb-10 leading-relaxed reveal">
+        {city.intro}
+      </p>
+      <div class="flex flex-wrap gap-4 reveal">
+        <a
+          href="/contact"
+          class="bg-terracotta text-cream font-body font-medium px-8 py-3.5 rounded-full hover:-translate-y-0.5 transition-all inline-flex items-center gap-2"
+        >
+          Get a free quote →
+        </a>
+        <a
+          href="https://wa.me/447446508333"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="bg-forest text-cream font-body font-medium px-8 py-3.5 rounded-full hover:-translate-y-0.5 transition-all inline-flex items-center gap-2"
+        >
+          <span class="w-2 h-2 bg-green-400 rounded-full wa-dot"></span>
+          WhatsApp us
+        </a>
+      </div>
+    </div>
+    <span
+      class="absolute right-0 top-1/2 -translate-y-1/2 font-display text-[18vw] text-rule/40 leading-none select-none pointer-events-none whitespace-nowrap"
+      style="font-variation-settings: 'opsz' 144"
+      aria-hidden="true"
+    >{city.name}</span>
+  </section>
+
+  <!-- STATS BAR -->
+  <section class="border-y border-rule py-10 px-6 md:px-10">
+    <div class="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+      {[
+        { value: '£499', label: 'Starting price' },
+        { value: '5 days', label: 'Typical delivery' },
+        { value: 'UK-based', label: 'Team & support' },
+        { value: 'No lock-in', label: 'You own everything' },
+      ].map((stat) => (
+        <div class="reveal">
+          <p
+            class="font-display text-3xl md:text-4xl text-terracotta"
+            style="font-variation-settings: 'opsz' 72"
+          >{stat.value}</p>
+          <p class="font-body text-xs uppercase tracking-widest text-muted mt-1">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- WHY YOU NEED A WEBSITE -->
+  <section class="py-20 md:py-32 px-6 md:px-10">
+    <div class="max-w-[1200px] mx-auto">
+      <h2
+        class="font-display text-3xl md:text-4xl mb-2"
+        style="font-variation-settings: 'opsz' 72"
+      >
+        Why {city.name} businesses need a better website
+      </h2>
+      <hr class="border-rule mb-12" />
+
+      <div>
+        {whyPoints.map((point) => (
+          <div class="grid grid-cols-[72px_1fr] md:grid-cols-[110px_1fr] gap-6 md:gap-10 border-b border-rule py-10 reveal group">
+            <span
+              class="font-display text-5xl md:text-7xl text-rule leading-none select-none"
+              style="font-variation-settings: 'opsz' 72"
+              aria-hidden="true"
+            >{point.n}</span>
+            <div class="border-l-2 border-transparent group-hover:border-terracotta transition-colors pl-6">
+              <h3
+                class="font-display text-xl md:text-2xl mb-3"
+                style="font-variation-settings: 'opsz' 36"
+              >{point.heading}</h3>
+              <p class="font-body text-muted leading-relaxed">{point.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES GRID -->
+  <section class="bg-ink text-cream py-20 md:py-32 px-6 md:px-10">
+    <div class="max-w-[1200px] mx-auto">
+      <h2
+        class="font-display text-3xl md:text-4xl mb-2 text-cream"
+        style="font-variation-settings: 'opsz' 72"
+      >What we build</h2>
+      <hr class="border-cream/20 mb-12" />
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-cream/10">
+        {services.map((s) => (
+          <div class="bg-ink p-8 hover:bg-forest/50 transition-colors">
+            <span class="text-terracotta text-xl mb-5 block">{s.symbol}</span>
+            <h3
+              class="font-display text-xl mb-2 text-cream"
+              style="font-variation-settings: 'opsz' 36"
+            >{s.title}</h3>
+            <p class="font-body text-cream/60 text-sm leading-relaxed">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO WE WORK WITH -->
+  <section class="py-20 md:py-32 px-6 md:px-10">
+    <div class="max-w-[1200px] mx-auto">
+      <h2
+        class="font-display text-3xl md:text-4xl mb-2"
+        style="font-variation-settings: 'opsz' 72"
+      >Who we work with in {city.name}</h2>
+      <hr class="border-rule mb-12" />
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {city.businesses.map((b) => (
+          <div class="border border-rule p-6 flex items-center gap-4 hover:border-terracotta transition-colors reveal">
+            <span class="w-1.5 h-8 bg-terracotta block shrink-0 rounded-sm" aria-hidden="true"></span>
+            <span class="font-body text-sm">{b}</span>
+          </div>
+        ))}
+      </div>
+
+      <p class="font-body text-muted mt-8 text-sm">
+        We also serve businesses in: {city.nearby.join(', ')}.
+      </p>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="border-y border-rule py-20 md:py-32 px-6 md:px-10" style="background: rgba(26,58,42,0.04)">
+    <div class="max-w-[1000px] mx-auto">
+      <p class="text-xs uppercase tracking-widest text-muted font-body mb-4 text-center">Transparent pricing</p>
+      <h2
+        class="font-display text-3xl md:text-5xl mb-4 text-center"
+        style="font-variation-settings: 'opsz' 72"
+      >
+        Websites from <em class="text-terracotta not-italic">£499</em>
+      </h2>
+      <p class="font-body text-muted text-base max-w-[480px] mx-auto mb-12 text-center leading-relaxed">
+        No hidden costs. No monthly platform fees. You own everything. We quote before we start.
+      </p>
+
+      <div class="grid sm:grid-cols-3 gap-6">
+        {pricing.map((p) => (
+          <div class={`border p-8 bg-cream reveal ${p.popular ? 'border-terracotta shadow-sm' : 'border-rule'}`}>
+            {p.popular && (
+              <p class="text-xs uppercase tracking-widest text-terracotta font-body mb-4">Most popular</p>
+            )}
+            <p class="font-body text-xs uppercase tracking-widest text-muted mb-2">{p.tier}</p>
+            <p
+              class="font-display text-4xl mb-6 text-ink"
+              style="font-variation-settings: 'opsz' 72"
+            >{p.price}</p>
+            <ul class="space-y-2">
+              {p.features.map((f) => (
+                <li class="flex items-start gap-2 font-body text-sm text-muted">
+                  <span class="text-terracotta mt-0.5 shrink-0" aria-hidden="true">✓</span>
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <p class="font-body text-center text-sm text-muted mt-8">
+        Need something bespoke?{' '}
+        <a href="/contact" class="text-terracotta hover:underline">Let's talk</a> — we quote for every project individually.
+      </p>
+    </div>
+  </section>
+
+  <!-- EMAIL CAPTURE -->
+  <section class="py-20 md:py-24 px-6 md:px-10">
+    <div class="max-w-[800px] mx-auto">
+      <EmailCapture
+        heading={`Free website audit for ${city.name} businesses`}
+        subtext={`We'll review your current site (or a competitor's) and give you an honest report — what's costing you leads, and how to fix it. No obligation, no cost.`}
+        source={`city-${city.slug}`}
+      />
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="bg-ink text-cream py-20 md:py-32 px-6 md:px-10 text-center">
+    <div class="max-w-[640px] mx-auto">
+      <p class="text-xs uppercase tracking-widest text-cream/40 font-body mb-6">
+        {city.name} · {city.county}
+      </p>
+      <h2
+        class="font-display text-3xl md:text-5xl mb-6 text-cream"
+        style="font-variation-settings: 'opsz' 72"
+      >
+        Ready to get more customers online?
+      </h2>
+      <p class="font-body text-cream/70 text-lg mb-10 leading-relaxed">
+        Tell us about your business and we'll come back with a quote within one business day.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href="/contact"
+          class="bg-terracotta text-cream font-body font-medium px-8 py-3.5 rounded-full hover:-translate-y-0.5 transition-all"
+        >
+          Get a free quote →
+        </a>
+        <a
+          href="https://wa.me/447446508333"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="bg-cream/10 border border-cream/20 text-cream font-body font-medium px-8 py-3.5 rounded-full hover:-translate-y-0.5 transition-all"
+        >
+          WhatsApp instead
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
